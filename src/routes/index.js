@@ -5,7 +5,7 @@ module.exports = (app) => {
         message:'Welcome To API'
     }));
 
-    app.get('/api/company',companyController.all);
+    app.get('/api/company',companyController.getAll);
     app.post('/api/company',companyController.create);
 
 }
