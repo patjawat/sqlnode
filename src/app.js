@@ -1,19 +1,33 @@
 const express = require('express');
-const routes = require('./routes')
 const app = express();
+const { ApolloServer, gql } = require('apollo-server-express');
 const models = require('../db/models');
-
+ 
 models.sequelize.sync().then(function() {
-    console.log('Nice! Database')
+  console.log('Nice! Database')
 }).catch(function(err) {
-    console.log(err,'Database')
+  console.log(err,'Database')
 })
-
-app.use(express.json())
-
 require('./routes')(app);
 
-app.get('*',(req,res) => res.status(200).send({
-    message: 'WEllcome'
-}))
-app.listen(3333)
+
+// Construct a schema, using GraphQL schema language
+const typeDefs = gql`
+  type Query {
+    hello: String
+  }
+`;
+ 
+// Provide resolver functions for your schema fields
+const resolvers = {
+  Query: {
+    hello: () => 'Hello world!',
+  },
+};
+ 
+const server = new ApolloServer({ typeDefs, resolvers });
+server.applyMiddleware({ app });
+ 
+app.listen({ port: 4000 }, () =>
+  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+);
