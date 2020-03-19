@@ -1,33 +1,28 @@
-const express = require('express');
-const app = express();
-const { ApolloServer, gql } = require('apollo-server-express');
-const models = require('../db/models');
- 
-models.sequelize.sync().then(function() {
-  console.log('Nice! Database')
-}).catch(function(err) {
-  console.log(err,'Database')
+import { ApolloServer, makeExecutableSchema } from 'apollo-server'
+import models from '../db/models/bbindex'
+import  resolvers from './resolvers'
+import  typeDefs from './types'
+
+
+const SECRET = process.env.SECRET || 'holamund';
+const schema = makeExecutableSchema({
+    typeDefs,
+    resolvers,
 })
-require('./routes')(app);
+
+const apollo = new ApolloServer({
+    schema,
+    context:{
+        models,
+        SECRET,
+    }
+});
 
 
-// Construct a schema, using GraphQL schema language
-const typeDefs = gql`
-  type Query {
-    hello: String
-  }
-`;
- 
-// Provide resolver functions for your schema fields
-const resolvers = {
-  Query: {
-    hello: () => 'Hello world!',
-  },
-};
- 
-const server = new ApolloServer({ typeDefs, resolvers });
-server.applyMiddleware({ app });
- 
-app.listen({ port: 4000 }, () =>
-  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
-);
+const PORT  = process.env.PORT || '4000';
+
+models.sequelize.sync().then(()=> {
+    apollo.listen(PORT).then(({url}) => {
+        console.log(`Servidor corriendo en ${url}`);
+    });
+})
