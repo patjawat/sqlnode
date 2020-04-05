@@ -1,0 +1,13 @@
+type Product{
+    id:ID!
+    name:String
+    price:String
+}
+
+type Query{
+    allProduct:[Product!]
+}
+
+type Mutation{
+    createProduct(name:String!, price:String!):Product!
+}

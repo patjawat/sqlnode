@@ -1,5 +1,5 @@
 import { ApolloServer, makeExecutableSchema } from 'apollo-server'
-import models from '../db/models/bbindex'
+import models from '../db/models/index'
 import  resolvers from './resolvers'
 import  typeDefs from './types'
 
