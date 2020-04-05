@@ -6,6 +6,8 @@ type Product{
 
 type Query{
     allProduct:[Product!]
+    getProduct(id: Int!): Product
+    updateProduct(id: Int!): Product
 }
 
 type Mutation{

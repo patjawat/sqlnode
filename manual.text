@@ -17,3 +17,11 @@ mutation create{
     price
   }
 }
+
+ค้นหาจาก ID
+query{
+  getProduct(id:1){
+    name
+    price
+  }
+}
